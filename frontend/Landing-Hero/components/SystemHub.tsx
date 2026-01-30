@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion, MotionValue, useTransform } from 'framer-motion';
 
@@ -7,83 +6,74 @@ interface Props {
 }
 
 const SystemHub: React.FC<Props> = ({ progress }) => {
-  const rotation = useTransform(progress, [0, 0.7], [0, 25]);
+  const rotation = useTransform(progress, [0, 0.7], [0, 15]);
+  const opacity = useTransform(progress, [0, 0.1, 0.6], [0, 1, 1]);
   
   return (
-    <div className="relative flex items-center justify-center w-[600px] h-[600px]">
-      {/* High-End Ambient Lighting */}
+    <div className="relative flex items-center justify-center w-[320px] md:w-[600px] h-[320px] md:h-[600px]">
+      {/* Precision Core Ambient */}
       <motion.div 
-        animate={{ opacity: [0.1, 0.15, 0.1] }}
-        transition={{ duration: 5, repeat: Infinity }}
-        className="absolute w-[500px] h-[500px] bg-white blur-[150px] rounded-full"
+        animate={{ opacity: [0.03, 0.08, 0.03] }}
+        transition={{ duration: 4, repeat: Infinity }}
+        className="absolute w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-500 blur-[120px] rounded-full"
       />
 
-      {/* The Monolithic System Hub */}
+      {/* Command Center Unit */}
       <motion.div 
-        style={{ rotateX: rotation }}
-        className="relative w-[400px] h-[540px] bg-[#050505] border border-white/10 rounded-[4rem] shadow-[0_50px_150px_rgba(0,0,0,1)] overflow-hidden flex flex-col p-10"
+        style={{ rotateX: rotation, opacity }}
+        className="relative w-[300px] md:w-[400px] h-[440px] md:h-[540px] bg-[#000000] border border-emerald-500/10 rounded-[3rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col p-8 md:p-10"
       >
-        {/* Upper Brand Section */}
-        <div className="flex justify-between items-start mb-16">
-           <div className="flex flex-col gap-1.5">
-              <span className="text-[9px] text-white/30 font-bold uppercase tracking-[0.5em]">Central Command</span>
-              <h4 className="text-xl font-light tracking-[0.2em] text-white uppercase">GreenChain</h4>
+        {/* Status Line */}
+        <div className="flex justify-end mb-12">
+           <div className="px-3 py-1 rounded-full border border-emerald-500/20 text-[8px] font-mono text-emerald-500/60 uppercase tracking-widest">
+             CORE OPS
            </div>
-           <div className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
         </div>
 
-        {/* Minimalist Data Visualization */}
+        {/* Data Matrix */}
         <div className="flex-1 flex flex-col justify-center">
-          <div className="relative h-[2px] w-full bg-white/[0.03] overflow-hidden mb-12">
-             <motion.div 
-               animate={{ x: ['-100%', '100%'] }}
-               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-             />
+          <div className="grid grid-cols-6 gap-2 mb-10 px-4">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <motion.div 
+                key={i}
+                animate={{ opacity: [0.05, 0.2, 0.05] }}
+                transition={{ duration: 2, delay: i * 0.1, repeat: Infinity }}
+                className="h-[1px] bg-emerald-500/40 rounded-full"
+              />
+            ))}
           </div>
 
-          <div className="flex items-center justify-center relative py-12">
-             {/* Main Core Ring */}
-             <div className="w-32 h-32 rounded-full border border-white/[0.05] flex items-center justify-center">
-                <div className="w-24 h-24 rounded-full border border-white/[0.1] flex items-center justify-center">
-                   <div className="w-4 h-4 bg-white rounded-full shadow-[0_0_20px_white]" />
-                </div>
+          <div className="flex items-center justify-center relative py-8">
+             {/* Dynamic Ring */}
+             <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border border-emerald-500/[0.05] flex items-center justify-center">
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full border-dashed border border-emerald-500/20 flex items-center justify-center"
+                >
+                   <div className="w-2 h-2 md:w-3 md:h-3 bg-emerald-500 rounded-full shadow-[0_0_15px_#10b981]" />
+                </motion.div>
              </div>
-             
-             {/* Scanning Lines */}
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-white/5 to-transparent" />
-             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-white/5 to-transparent" />
-          </div>
-
-          <div className="relative h-[2px] w-full bg-white/[0.03] overflow-hidden mt-12">
-             <motion.div 
-               animate={{ x: ['100%', '-100%'] }}
-               transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
-             />
           </div>
         </div>
 
-        {/* Footer Technical Detail */}
-        <div className="mt-auto flex items-center justify-between opacity-20">
-           <div className="text-[8px] tracking-[0.3em] font-bold uppercase">System ID: GC-900X</div>
-           <div className="w-12 h-[1px] bg-white" />
+        {/* Technical Footer */}
+        <div className="mt-auto pt-6 border-t border-emerald-500/5 flex items-center justify-between">
+           <div className="text-[7px] md:text-[8px] tracking-[0.4em] font-black text-white/10 uppercase italic">GreenChain OS</div>
+           <div className="flex gap-1.5">
+             <div className="w-1 h-1 rounded-full bg-emerald-500" />
+             <div className="w-1 h-1 rounded-full bg-emerald-900" />
+             <div className="w-1 h-1 rounded-full bg-emerald-900" />
+           </div>
         </div>
 
-        {/* Surface light sweep */}
+        {/* Luxury Light Sweep */}
         <motion.div 
           animate={{ x: [-400, 600] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
-          className="absolute top-0 w-40 h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent skew-x-12"
+          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+          className="absolute top-0 w-32 h-full bg-gradient-to-r from-transparent via-emerald-500/[0.03] to-transparent skew-x-12"
         />
       </motion.div>
-
-      {/* Architectural Accents */}
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-        className="absolute w-[650px] h-[650px] border border-white/[0.03] rounded-full"
-      />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import ParticleBackground from './ParticleBackground';
@@ -15,72 +14,79 @@ const HeroExperience: React.FC = () => {
   });
 
   const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 40,
-    damping: 15,
+    stiffness: 35,
+    damping: 20,
     restDelta: 0.001
   });
 
-  // Section 1: Title & Hero Info
-  const titleOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0]);
-  const titleY = useTransform(smoothProgress, [0, 0.12], [0, -40]);
+  // NARRATIVE FLOW RANGES
+  // 0.00 - 0.15: Title Intro
+  // 0.15 - 0.35: System Hub (The Logic)
+  // 0.35 - 0.70: Stakeholder Dashboard (The Value)
+  // 0.70 - 1.00: MessBot (The Hardware)
+
+  // Section 1: Title
+  const titleOpacity = useTransform(smoothProgress, [0, 0.12, 0.15], [1, 1, 0]);
+  const titleScale = useTransform(smoothProgress, [0, 0.15], [1, 0.9]);
   
-  // The Central Hub / Product Morph
-  const hubOpacity = useTransform(smoothProgress, [0, 0.55, 0.65], [1, 1, 0]);
-  const hubScale = useTransform(smoothProgress, [0, 0.6], [1, 1.15]);
-  const hubY = useTransform(smoothProgress, [0.1, 0.2], [40, 0]);
+  // Section 2: System Hub (Logic)
+  // Fades in after title, fades out before dashboard gets busy
+  const hubOpacity = useTransform(smoothProgress, [0.15, 0.20, 0.30, 0.35], [0, 1, 1, 0]);
+  const hubScale = useTransform(smoothProgress, [0.15, 0.35], [0.9, 1.1]);
 
-  // Stakeholder Base visibility (Unified dashboard at the bottom)
-  const dashboardOpacity = useTransform(smoothProgress, [0.15, 0.25, 0.65, 0.72], [0, 1, 1, 0]);
-  const dashboardY = useTransform(smoothProgress, [0.15, 0.25], [100, 0]);
+  // Section 3: Stakeholder Dashboard
+  // Appears while SystemHub is fading out
+  const dashboardOpacity = useTransform(smoothProgress, [0.35, 0.40, 0.65, 0.70], [0, 1, 1, 0]);
+  const dashboardY = useTransform(smoothProgress, [0.35, 0.40], [40, 0]);
 
-  // MessBot Product visibility
-  const messBotOpacity = useTransform(smoothProgress, [0.65, 0.75, 1], [0, 1, 1]);
-  const messBotScale = useTransform(smoothProgress, [0.65, 0.8], [0.85, 1]);
+  // Section 4: MessBot (Hardware)
+  const messBotOpacity = useTransform(smoothProgress, [0.70, 0.75, 1], [0, 1, 1]);
+  const messBotScale = useTransform(smoothProgress, [0.70, 0.85], [0.85, 1]);
 
   // Final CTA
-  const ctaOpacity = useTransform(smoothProgress, [0.85, 0.95], [0, 1]);
-  const ctaY = useTransform(smoothProgress, [0.85, 0.95], [40, 0]);
+  const ctaOpacity = useTransform(smoothProgress, [0.88, 0.95], [0, 1]);
+  const ctaY = useTransform(smoothProgress, [0.88, 0.95], [20, 0]);
 
   return (
-    <div ref={containerRef} className="h-[700vh] w-full relative">
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+    <div ref={containerRef} className="h-[800vh] w-full relative pure-black">
+      <div className="sticky top-0 h-screen w-full overflow-hidden pure-black">
         
-        {/* Subtle Luxury Grain / Particles */}
+        {/* Technical Particle Layer */}
         <ParticleBackground progress={smoothProgress} />
 
-        {/* LUXURY TITLE - ON LOAD */}
+        {/* MNC-GRADE HERO TITLE */}
         <motion.div 
-          style={{ opacity: titleOpacity, y: titleY }}
-          className="absolute inset-0 z-50 flex flex-col items-center justify-center pointer-events-none"
+          style={{ opacity: titleOpacity, scale: titleScale }}
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center px-4"
         >
-          <motion.h1 
-            initial={{ opacity: 0, letterSpacing: '0.5em' }}
-            animate={{ opacity: 1, letterSpacing: '0.1em' }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
-            className="text-7xl md:text-9xl font-light tracking-[0.1em] text-white text-center uppercase"
-          >
-            GreenChain
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="text-white/40 font-medium tracking-[0.6em] uppercase text-[10px] mt-6"
-          >
-            Institutional Waste Intelligence
-          </motion.p>
-          <motion.div 
-            animate={{ opacity: [0.2, 0.5, 0.2] }}
-            transition={{ repeat: Infinity, duration: 3 }}
-            className="absolute bottom-12 flex flex-col items-center gap-4"
-          >
-            <div className="w-[1px] h-16 bg-gradient-to-b from-white/20 to-transparent" />
-          </motion.div>
+          <div className="max-w-7xl w-full text-center space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <h1 className="text-[clamp(3.5rem,12vw,11rem)] font-black tracking-[-0.04em] text-white leading-[0.9] uppercase glow-text">
+                GreenChain
+              </h1>
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 1 }}
+              className="flex flex-col items-center gap-6"
+            >
+              <p className="text-white/40 font-bold tracking-[0.4em] uppercase text-[10px] md:text-xs">
+                Institutional Waste Intelligence Matrix
+              </p>
+              <div className="w-[1px] h-24 bg-gradient-to-b from-emerald-500/40 to-transparent" />
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* CENTRAL CORE - HIGH END OBJECT */}
+        {/* CENTRAL SYSTEM HUB DISPLAY (Transition phase only) */}
         <div className="absolute inset-0 flex items-center justify-center z-10">
-          <motion.div style={{ opacity: hubOpacity, scale: hubScale, y: hubY }}>
+          <motion.div style={{ opacity: hubOpacity, scale: hubScale }}>
             <SystemHub progress={smoothProgress} />
           </motion.div>
 
@@ -89,26 +95,29 @@ const HeroExperience: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* STAKEHOLDER UNIFIED BASE DASHBOARD */}
+        {/* INSTITUTIONAL DASHBOARD LAYER (Stand-alone phase) */}
         <motion.div 
           style={{ opacity: dashboardOpacity, y: dashboardY }}
-          className="absolute bottom-0 left-0 w-full z-40 px-12 pb-12 pointer-events-none"
+          className="absolute inset-0 z-40 flex items-center justify-center px-6 md:px-12 pointer-events-none"
         >
           <StakeholderDashboard progress={smoothProgress} />
         </motion.div>
 
-        {/* FINAL CTA SECTION */}
+        {/* LUXURY CTA FINALE */}
         <motion.div 
           style={{ opacity: ctaOpacity, y: ctaY }}
-          className="absolute inset-0 z-50 flex flex-col items-center justify-end pb-32 pointer-events-none"
+          className="absolute inset-0 z-50 flex flex-col items-center justify-center pointer-events-none"
         >
-          <div className="text-center pointer-events-auto">
-            <h3 className="text-5xl md:text-7xl font-extralight tracking-tight text-white mb-6 uppercase">MessBot</h3>
-            <p className="text-white/30 text-sm tracking-[0.3em] uppercase mb-12">The Apex of Circular Systems</p>
+          <div className="text-center pointer-events-auto max-w-xl px-6">
+            <span className="text-emerald-500/50 text-[10px] font-bold tracking-[0.5em] uppercase mb-4 block">Deployment // 01</span>
+            <h3 className="text-6xl md:text-8xl font-black tracking-tighter text-white mb-8 uppercase leading-none">MessBot</h3>
+            <p className="text-white/40 text-base md:text-lg font-medium leading-relaxed mb-12">
+              Autonomous environmental logistics for the next generation of institutional sustainability.
+            </p>
             <motion.button 
-              whileHover={{ scale: 1.02, letterSpacing: '0.3em' }}
+              whileHover={{ scale: 1.05, backgroundColor: '#10b981', color: '#000', borderColor: '#10b981' }}
               whileTap={{ scale: 0.98 }}
-              className="px-20 py-6 border border-white/20 text-white font-medium rounded-full text-xs tracking-[0.2em] uppercase transition-all duration-500 backdrop-blur-md hover:bg-white hover:text-black"
+              className="px-16 py-5 border border-emerald-500/20 text-white font-bold rounded-full text-[10px] tracking-[0.3em] uppercase transition-all duration-500 backdrop-blur-xl"
               onClick={() => window.location.href = 'https://messbot-hero.netlify.app/'}
             >
               Request Access
@@ -116,9 +125,6 @@ const HeroExperience: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Minimal Border Accents */}
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-white/5" />
-        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-white/5" />
       </div>
     </div>
   );
