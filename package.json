@@ -1,11 +1,47 @@
 {
+  "name": "greenchain-converse",
+  "private": true,
   "scripts": {
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "dev:landing": "cd frontend/Landing-Hero && npm install && npm run dev",
+    "dev:messbot": "cd frontend/MessBot-Hero && npm install && npm run dev",
+    "dev:insti": "cd frontend/Insti-Hero && npm install && npm run dev",
+    "dev:processor": "cd frontend/Processor-Hero && npm install && npm run dev",
+    "dev:all": "concurrently \"npm run dev:landing\" \"npm run dev:messbot\" \"npm run dev:insti\" \"npm run dev:processor\""
   },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "mongoose": "^9.1.5"
-  }
+    "framer-motion": "^12.29.2",
+    "mongoose": "^9.1.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.0"
+  },
+  "version": "1.0.0",
+  "description": "GreenChain is an IoT-based system that tracks waste disposal using a smart bin.\r It measures waste weight using sensors, sends the data to a backend server, stores it in a database, and displays it on an admin dashboard.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amantebriwal4321/greenchain-converse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/amantebriwal4321/greenchain-converse/issues"
+  },
+  "homepage": "https://github.com/amantebriwal4321/greenchain-converse#readme"
 }
