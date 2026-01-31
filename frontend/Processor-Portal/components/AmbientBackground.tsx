@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion, MotionValue, useTransform } from 'framer-motion';
 
@@ -6,7 +7,6 @@ interface AmbientBackgroundProps {
 }
 
 const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ progress }) => {
-  // Map scroll progress to background shifts
   const bgOpacity = useTransform(progress, [0, 0.1, 0.9, 1], [0.4, 0.8, 0.8, 1]);
   const orbY1 = useTransform(progress, [0, 1], ['0%', '20%']);
   const orbY2 = useTransform(progress, [0, 1], ['0%', '-30%']);

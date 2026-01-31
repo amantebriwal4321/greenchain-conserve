@@ -2,15 +2,13 @@
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import Hero from './components/Hero';
-import MetaphorFlow from './components/MetaphorFlow';
-import PurposeSection from './components/PurposeSection';
-import BenefitCards from './components/BenefitCards';
 import LoginGate from './components/LoginGate';
 import AmbientBackground from './components/AmbientBackground';
 import Dashboard from './components/Dashboard';
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [firmName, setFirmName] = useState('');
+  const [isAccessGranted, setIsAccessGranted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -24,42 +22,41 @@ const App: React.FC = () => {
     restDelta: 0.001
   });
 
-  if (isLoggedIn) {
+  if (isAccessGranted) {
     return (
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.div 
+          key="dashboard"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           className="min-h-screen bg-black"
         >
-          <Dashboard onLogout={() => setIsLoggedIn(false)} />
+          <Dashboard firmName={firmName} onLogout={() => {
+            setIsAccessGranted(false);
+            setFirmName('');
+          }} />
         </motion.div>
       </AnimatePresence>
     );
   }
 
   return (
-    <div ref={containerRef} className="relative bg-black min-h-[500vh]">
+    <div ref={containerRef} className="relative bg-black min-h-[250vh]">
       <AmbientBackground progress={smoothProgress} />
       
-      {/* 1. Opening Section */}
       <Hero progress={smoothProgress} />
-
-      {/* 2. Use Cases Section */}
-      <MetaphorFlow progress={smoothProgress} />
-
-      {/* 3. Intention Section */}
-      <PurposeSection progress={smoothProgress} />
-
-      {/* 4. Benefits Section */}
-      <BenefitCards progress={smoothProgress} />
-
-      {/* 5. Login Gate Section */}
-      <LoginGate progress={smoothProgress} onLogin={() => setIsLoggedIn(true)} />
       
-      {/* Visual Indicator of Scroll Progress (Subtle) */}
+      <LoginGate 
+        progress={smoothProgress} 
+        onAccess={(name) => {
+          setFirmName(name);
+          setIsAccessGranted(true);
+        }} 
+      />
+      
       <motion.div 
-        className="fixed top-0 left-0 h-1 bg-white/20 z-50 origin-left"
+        className="fixed top-0 left-0 h-1 bg-emerald-500/40 z-50 origin-left"
         style={{ scaleX: smoothProgress }}
       />
     </div>
