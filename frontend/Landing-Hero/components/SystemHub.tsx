@@ -23,12 +23,8 @@ const SystemHub: React.FC<Props> = ({ progress }) => {
         style={{ rotateX: rotation, opacity }}
         className="relative w-[300px] md:w-[400px] h-[440px] md:h-[540px] bg-[#000000] border border-emerald-500/10 rounded-[3rem] md:rounded-[4rem] shadow-[0_40px_100px_rgba(0,0,0,1)] overflow-hidden flex flex-col p-8 md:p-10"
       >
-        {/* Status Line */}
-        <div className="flex justify-end mb-12">
-           <div className="px-3 py-1 rounded-full border border-emerald-500/20 text-[8px] font-mono text-emerald-500/60 uppercase tracking-widest">
-             CORE OPS
-           </div>
-        </div>
+        {/* Status Line Spacer */}
+        <div className="h-12 w-full" />
 
         {/* Data Matrix */}
         <div className="flex-1 flex flex-col justify-center">
