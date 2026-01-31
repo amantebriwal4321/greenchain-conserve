@@ -1,53 +1,80 @@
-  const express = require("express");
-  const router = express.Router();
-  const WasteRecord = require("../models/WasteRecord");
+const express = require("express");
+const router = express.Router();
+const WasteEvent = require("../models/WasteEvent");
 
-  // POST: save waste data (simulating Arduino)
-  router.post("/", async (req, res) => {
-    try {
-      const body = req.body || {};
-      const { deviceId, weightKg } = body;
+// POST /api/waste - Save incoming ESP32 events
+router.post("/", async (req, res) => {
+  try {
+    const { deviceId, event, distanceCm, timestamp } = req.body;
 
-      if (!deviceId || weightKg === undefined) {
-        return res.status(400).json({
-          error: "Missing required fields: deviceId and weightKg",
-          hint: "Send JSON with Content-Type: application/json",
-        });
-      }
+    // Log incoming data for debugging
+    console.log("-----------------------------------------");
+    console.log(`📡 ESP32 Event: ${deviceId} -> ${event} (${distanceCm}cm) @ ${timestamp || 'N/A'}`);
+    console.log("-----------------------------------------");
 
-      const weight = Number(weightKg);
-      if (isNaN(weight) || weight < 0) {
-        return res.status(400).json({ error: "weightKg must be a valid number >= 0" });
-      }
-
-      // Map weightKg to quantity (required by model) and include deviceId
-      const record = new WasteRecord({
-        deviceId,
-        weightKg: weight,
-        quantity: weight,
-        type: "other",
-      });
-      await record.save();
-
-      res.status(201).json({
-        message: "Waste data saved",
-        data: record
-      });
-    } catch (err) {
-      console.error("Error saving waste record:", err);
-      const message = err.message || "Server error";
-      const isValidation = err.name === "ValidationError";
-      res.status(isValidation ? 400 : 500).json({
-        error: isValidation ? "Validation error" : "Server error",
-        details: message,
-      });
+    if (!deviceId || !event || distanceCm === undefined) {
+      return res.status(400).json({ error: "Missing required fields: deviceId, event, distanceCm" });
     }
-  });
 
-  // GET: fetch all waste data
-  router.get("/", async (req, res) => {
-    const records = await WasteRecord.find().sort({ createdAt: -1 });
-    res.json(records);
-  });
+    const newEvent = new WasteEvent({
+      deviceId,
+      event,
+      distanceCm: Number(distanceCm),
+      timestamp // Field from ESP32
+    });
 
-  module.exports = router;
+    await newEvent.save();
+
+    res.status(201).json({
+      message: "Event saved successfully",
+      data: newEvent
+    });
+  } catch (err) {
+    console.error("❌ Error saving event:", err.message);
+    res.status(500).json({ error: "Server error", details: err.message });
+  }
+});
+
+// GET /api/waste/latest - Return the absolute latest state for a specific device
+router.get("/latest", async (req, res) => {
+  try {
+    const { deviceId } = req.query;
+    if (!deviceId) return res.status(400).json({ error: "deviceId is required" });
+
+    const latest = await WasteEvent.findOne({ deviceId }).sort({ createdAt: -1 });
+    if (!latest) return res.status(404).json({ error: "No data found for this device" });
+
+    res.json(latest);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// GET /api/waste/logs - Return last N events for a specific device
+router.get("/logs", async (req, res) => {
+  try {
+    const { deviceId, limit = 10 } = req.query;
+    if (!deviceId) return res.status(400).json({ error: "deviceId is required" });
+
+    const logs = await WasteEvent.find({ deviceId })
+      .sort({ createdAt: -1 })
+      .limit(Number(limit));
+
+    res.json(logs);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// GET /api/waste - (Legacy/Internal) Return latest events sorted by time
+router.get("/", async (req, res) => {
+  try {
+    const events = await WasteEvent.find().sort({ createdAt: -1 }).limit(50);
+    res.json(events);
+  } catch (err) {
+    console.error("❌ Error fetching events:", err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+module.exports = router;

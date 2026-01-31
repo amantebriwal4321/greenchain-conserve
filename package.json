@@ -6,11 +6,13 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "dev:backend": "node backend/server.js",
     "dev:landing": "cd frontend/Landing-Hero && npm install && npm run dev",
     "dev:messbot": "cd frontend/MessBot-Hero && npm install && npm run dev",
+    "dev:partner": "cd frontend/Partner-Platform && npm install && npm run dev",
     "dev:insti": "cd frontend/Insti-Hero && npm install && npm run dev",
     "dev:processor": "cd frontend/Processor-Hero && npm install && npm run dev",
-    "dev:all": "concurrently \"npm run dev:landing\" \"npm run dev:messbot\" \"npm run dev:insti\" \"npm run dev:processor\""
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:landing\" \"npm run dev:messbot\" \"npm run dev:partner\" \"npm run dev:insti\" \"npm run dev:processor\""
   },
   "dependencies": {
     "cors": "^2.8.6",
